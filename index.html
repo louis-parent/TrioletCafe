@@ -5,9 +5,13 @@
 		<meta charset="UTF-8" />
 		
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
-		
+	    <link rel="stylesheet" href="styles/leaflet-routing-machine.css" />
+
 		<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
-		
+		<script src="scripts/leaflet-routing-machine.js"></script>
+		<script src="scripts/lrm-graphhopper-1.2.0.js"></script>
+
+
 		<style>
 			html, body
 			{
@@ -27,40 +31,88 @@
 			}
 		</style>
 		
-		<script defer>
-			const fdsLocation = {
-				latitude: 43.63278,
-				longitude: 3.86451,
-				zoom: 18
+		<script defer>			
+			const locations = {
+				fds: {			
+					latitude: 43.63278,
+					longitude: 3.86451,
+					zoom: 18
+				},
+				coffee: [{
+					latitude: 43.63304914328182,
+					longitude: 3.862113786201999,
+					amount: 2
+				}, {
+					latitude: 43.63162069367068,
+					longitude: 3.863487225751479,
+					amount: 3
+				}, {
+					latitude: 43.631381114092,
+					longitude: 3.86231660842896,
+					amount: 3
+				}],
+				snack: [{
+					latitude: 43.63304914328182,
+					longitude: 3.862113786201999,
+					amount: 1
+				}, {
+					latitude: 43.63162069367068,
+					longitude: 3.863487225751479,
+					amount: 1
+				}, {
+					latitude: 43.631381114092,
+					longitude: 3.86231660842896,
+					amount: 3
+				}]
 			};
 			
-			const MarkerIcon = L.Icon.extend({
+			const CoffeeIcon = L.Icon.extend({
 				options: {
-					iconUrl: 'assets/marker.png',
-					shadowUrl: 'assets/marker_shadow.png',
-					iconSize:     [46, 60],
-					shadowSize:   [48, 37],
-					iconAnchor:   [23, 60],
-					shadowAnchor: [0, 37],
-					popupAnchor:  [0, -60]
+					iconUrl: 'assets/coffee.png',
+					iconSize:     [32, 32],
+					iconAnchor:   [16, 32],
+					popupAnchor:  [0, -32]
 				}
 			});
-			const markerIcon = new MarkerIcon();
+			const coffeeIcon = new CoffeeIcon();
+			
+			const SnackIcon = L.Icon.extend({
+				options: {
+					iconUrl: 'assets/snack.png',
+					iconSize:     [32, 32],
+					iconAnchor:   [16, 32],
+					popupAnchor:  [0, -32]
+				}
+			});
+			const snackIcon = new SnackIcon();
 			
 			window.addEventListener("load", () => {
-				const map = L.map('map').setView([fdsLocation.latitude, fdsLocation.longitude], fdsLocation.zoom);
+				const map = L.map("map").setView([locations.fds.latitude, locations.fds.longitude], locations.fds.zoom);
 				
-				L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 					maxZoom: 19,
-					attribution: '© OpenStreetMap'
+					attribution: "© OpenStreetMap"
 				}).addTo(map);
 				
-				const cofeeMachineBat5 = L.marker([43.63304914328182, 3.862113786201999], { icon: markerIcon }).addTo(map);
-				cofeeMachineBat5.bindPopup("Disponibilité : <ul><li>2 machines à café</li><li>1 distributeurs snack/boisson</li></ul>");
-				const cofeemachineBat7 = L.marker([43.63162069367068, 3.863487225751479], { icon: markerIcon }).addTo(map);
-				cofeemachineBat7.bindPopup("Disponibilité : <ul><li>5 machines à café</li><li>2 distributeurs snack/boisson</li></ul>");
-				const cofeemachineBat36 = L.marker([43.631381114092, 3.86231660842896], { icon: markerIcon }).addTo(map);
-				cofeemachineBat36.bindPopup("Disponibilité : <ul><li>3 machines à café</li><li>1 distributeurs snack/boisson</li></ul>");
+				for(let coffee of locations.coffee)
+				{
+					const marker = L.marker([coffee.latitude, coffee.longitude], { icon: coffeeIcon }).addTo(map);
+					marker.bindPopup("Disponibilité : <i>" + coffee.amount + " machines</i>");
+				}
+			
+				L.Routing.control({
+					waypoints: [
+						L.latLng(43.63304914328182, 3.862113786201999),
+						L.latLng(43.631381114092, 3.86231660842896)
+					],
+					router: L.Routing.graphHopper("2416c596-20ba-4079-923b-471cdb741795", {
+						urlParameters: {
+							vehicle: "foot"
+						}
+					}),
+					routeWhileDragging: true,
+					createMarker: function() { return null; }
+				}).addTo(map);
 			});
 		</script>
 	</head>
