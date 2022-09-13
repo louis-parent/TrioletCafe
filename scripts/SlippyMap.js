@@ -17,11 +17,15 @@ class SlippyMap
 			default: zoom.default
 		};		
 		
+		this.isGeolocationAvailable = true;
+		this.isFollowingPosition = false;
 		this.displayedRouting = null;
 		
 		this.setupTile();
 		this.setupLayerGroups();
 		this.setupLeaflet(id);
+		
+		this.setupGeolocation();
 	}
 	
 	setupTile()
@@ -34,6 +38,9 @@ class SlippyMap
 	
 	setupLayerGroups()
 	{
+		this.positionMarker = L.marker([0, 0], { icon: positionIcon });
+		this.positionGroup = L.layerGroup([this.positionMarker]);
+		
 		this.coffeeGroup = L.layerGroup([]);
 		this.snackGroup = L.layerGroup([]);
 		
@@ -60,6 +67,26 @@ class SlippyMap
 		this.leaflet.setView([this.center.latitude, this.center.longitude], this.zoom.default);
 	}
 	
+	setupGeolocation()
+	{
+		if(navigator.geolocation)
+		{
+			navigator.geolocation.watchPosition((position) => {
+				this.updatePositionMarker(position.coords);
+			}, (error) => {
+				if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE || error.code === error.UNKNOWN_ERROR
+				)
+				{
+					this.isGeolocationAvailable = false;
+				}
+			});
+		}
+		else
+		{
+			this.isGeolocationAvailable = false;
+		}
+	}
+	
 	addCoffeeMarker(data)
 	{
 		const marker = L.marker([data.latitude, data.longitude], { icon: coffeeIcon });
@@ -72,6 +99,28 @@ class SlippyMap
 		const marker = L.marker([data.latitude, data.longitude], { icon: snackIcon }).addTo(this.leaflet);
 		marker.bindPopup("Disponibilité : <i>" + data.amount + " machines</i>");
 		this.snackGroup.addLayer(marker);
+	}
+	
+	togglePositionMarker()
+	{
+		if(this.isFollowingPosition)
+		{
+			this.leaflet.removeLayer(this.positionGroup);
+		}
+		else
+		{
+			this.leaflet.addLayer(this.positionGroup);
+		}
+		
+		this.isFollowingPosition = !this.isFollowingPosition;
+	}
+	
+	updatePositionMarker(position)
+	{
+		if(this.isFollowingPosition)
+		{
+			this.positionMarker.setLatLng([position.latitude, position.longitude]);
+		}
 	}
 	
 	createPedestrianRouting(start, end)

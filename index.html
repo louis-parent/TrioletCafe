@@ -14,6 +14,12 @@
 		<script defer src="scripts/SlippyMap.js"></script>
 
 		<style>
+			:root
+			{
+				--leaflet-margin: 10px;
+				--leaflet-icon-size: 44px;
+			}
+			
 			html, body
 			{
 				width: 100%;
@@ -35,13 +41,25 @@
 			{
 				position: absolute;
 			
-				left: 10px;
-				bottom: 10px;
-
-				z-index: 9999;
+				left: var(--leaflet-margin);
+				bottom: var(--leaflet-margin);
 			
 				background-image: url(assets/center.png);
-				background-size: 90% 90%;
+			}
+			
+			#position
+			{
+				position: absolute;
+			
+				left: calc((var(--leaflet-margin) * 2) + var(--leaflet-icon-size));
+				bottom: var(--leaflet-margin);
+			
+				background-image: url(assets/person_disabled.png);
+			}
+			
+			#position.enabled
+			{
+				background-image: url(assets/person.png);
 			}
 			
 			.leaflet-control-layers-toggle
@@ -54,12 +72,15 @@
 			{
 			    background: #FFF;
 				background-position: center;
-
+				background-size: 90% 90%;
+			
 				border: 2px solid rgba(0,0,0,0.2);
 			    border-radius: 5px;
 			
-				width: 44px;
-				height: 44px;
+				width: var(--leaflet-icon-size);
+				height: var(--leaflet-icon-size);
+			
+				z-index: 9999;
 			}
 		</style>
 		
@@ -117,13 +138,22 @@
 				document.querySelector("#center").addEventListener("click", () => {
 					map.resetView();
 				});
+			
+				document.querySelector("#position").addEventListener("click", (event) => {
+					if(map.isGeolocationAvailable)
+					{
+						event.target.classList.toggle("enabled");
+						map.togglePositionMarker();
+					}
+				});
 			});
 		</script>
 	</head>
 	
 	<body>
 		<a id="center" class="leaflet-like-button" href="#"></a>
-
+		<a id="position" class="leaflet-like-button" href="#"></a>
+		
 		<main id="map">
 		</main>
 	</body>

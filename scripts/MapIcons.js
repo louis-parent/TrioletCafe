@@ -16,5 +16,15 @@ const SnackIcon = L.Icon.extend({
 	}
 });
 
+const PositionIcon = L.Icon.extend({
+	options: {
+		iconUrl: 'assets/person.png',
+		iconSize:     [48, 48],
+		iconAnchor:   [24, 48],
+		popupAnchor:  [0, -48]
+	}
+});
+
 const coffeeIcon = new CoffeeIcon();
 const snackIcon = new SnackIcon();
+const positionIcon = new PositionIcon();
