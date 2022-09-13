@@ -10,7 +10,8 @@
 		<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
 		<script src="scripts/leaflet-routing-machine.js"></script>
 		<script src="scripts/lrm-graphhopper-1.2.0.js"></script>
-
+		<script src="scripts/MapIcons.js"></script>
+		<script src="scripts/SlippyMap.js"></script>
 
 		<style>
 			html, body
@@ -66,53 +67,14 @@
 				}]
 			};
 			
-			const CoffeeIcon = L.Icon.extend({
-				options: {
-					iconUrl: 'assets/coffee.png',
-					iconSize:     [32, 32],
-					iconAnchor:   [16, 32],
-					popupAnchor:  [0, -32]
-				}
-			});
-			const coffeeIcon = new CoffeeIcon();
-			
-			const SnackIcon = L.Icon.extend({
-				options: {
-					iconUrl: 'assets/snack.png',
-					iconSize:     [32, 32],
-					iconAnchor:   [16, 32],
-					popupAnchor:  [0, -32]
-				}
-			});
-			const snackIcon = new SnackIcon();
-			
 			window.addEventListener("load", () => {
-				const map = L.map("map").setView([locations.fds.latitude, locations.fds.longitude], locations.fds.zoom);
-				
-				L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-					maxZoom: 19,
-					attribution: "© OpenStreetMap"
-				}).addTo(map);
+				const map = new SlippyMap(locations.fds.latitude, locations.fds.longitude, locations.fds.zoom, 19);
+				map.setTile();
 				
 				for(let coffee of locations.coffee)
 				{
-					const marker = L.marker([coffee.latitude, coffee.longitude], { icon: coffeeIcon }).addTo(map);
-					marker.bindPopup("Disponibilité : <i>" + coffee.amount + " machines</i>");
+					map.addCoffeeMarker(coffee);
 				}
-			
-				L.Routing.control({
-					waypoints: [
-						L.latLng(43.63304914328182, 3.862113786201999),
-						L.latLng(43.631381114092, 3.86231660842896)
-					],
-					router: L.Routing.graphHopper("2416c596-20ba-4079-923b-471cdb741795", {
-						urlParameters: {
-							vehicle: "foot"
-						}
-					}),
-					routeWhileDragging: true,
-					createMarker: function() { return null; }
-				}).addTo(map);
 			});
 		</script>
 	</head>
