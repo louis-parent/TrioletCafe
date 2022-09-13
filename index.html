@@ -30,6 +30,12 @@
 				height: 100%;
 				width: 100%;
 			}
+			
+			.leaflet-retina .leaflet-control-layers-toggle
+			{
+				background-image: url(assets/layers.png);
+				background-size: 90% 90%;
+			}
 		</style>
 		
 		<script defer>			
@@ -68,12 +74,19 @@
 			};
 			
 			window.addEventListener("load", () => {
-				const map = new SlippyMap(locations.fds.latitude, locations.fds.longitude, locations.fds.zoom, 19);
-				map.setTile();
+				const map = new SlippyMap(locations.fds, {
+					default: locations.fds.zoom,
+					max: 19
+				});
 				
 				for(let coffee of locations.coffee)
 				{
 					map.addCoffeeMarker(coffee);
+				}
+			
+				for(let snack of locations.snack)
+				{
+					map.addSnackMarker(snack);
 				}
 			});
 		</script>
