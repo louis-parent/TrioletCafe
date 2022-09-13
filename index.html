@@ -31,10 +31,35 @@
 				width: 100%;
 			}
 			
-			.leaflet-retina .leaflet-control-layers-toggle
+			#center
 			{
-				background-image: url(assets/layers.png);
+				position: absolute;
+			
+				left: 10px;
+				bottom: 10px;
+
+				z-index: 9999;
+			
+				background-image: url(assets/center.png);
 				background-size: 90% 90%;
+			}
+			
+			.leaflet-control-layers-toggle
+			{
+				background-image: url(assets/layers.png) !important;
+				background-size: 90% 90% !important;
+			}
+			
+			.leaflet-like-button
+			{
+			    background: #FFF;
+				background-position: center;
+
+				border: 2px solid rgba(0,0,0,0.2);
+			    border-radius: 5px;
+			
+				width: 44px;
+				height: 44px;
 			}
 		</style>
 		
@@ -88,11 +113,18 @@
 				{
 					map.addSnackMarker(snack);
 				}
+			
+				document.querySelector("#center").addEventListener("click", () => {
+					map.resetView();
+				});
 			});
 		</script>
 	</head>
 	
 	<body>
-		<main id="map"></main>
+		<a id="center" class="leaflet-like-button" href="#"></a>
+
+		<main id="map">
+		</main>
 	</body>
 </html>

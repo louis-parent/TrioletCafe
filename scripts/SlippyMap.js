@@ -12,13 +12,16 @@ class SlippyMap
 			longitude: center.longitude
 		};
 		
-		this.maxZoom = zoom.max;		
+		this.zoom = {
+			max: zoom.max,
+			default: zoom.default
+		};		
 		
 		this.displayedRouting = null;
 		
 		this.setupTile();
 		this.setupLayerGroups();
-		this.setupLeaflet(zoom.default, id);
+		this.setupLeaflet(id);
 	}
 	
 	setupTile()
@@ -40,14 +43,21 @@ class SlippyMap
 		});
 	}
 	
-	setupLeaflet(defaultZoom, id)
+	setupLeaflet(id)
 	{
-		this.leaflet = L.map(id || "map").setView([this.center.latitude, this.center.longitude], defaultZoom);
+		this.leaflet = L.map(id || "map");
+		this.resetView();
+		
 		this.leaflet.addLayer(this.coffeeGroup);
 		this.leaflet.addLayer(this.snackGroup);
 		
 		this.tile.addTo(this.leaflet);
 		this.layerControl.addTo(this.leaflet);
+	}
+	
+	resetView()
+	{
+		this.leaflet.setView([this.center.latitude, this.center.longitude], this.zoom.default);
 	}
 	
 	addCoffeeMarker(data)
