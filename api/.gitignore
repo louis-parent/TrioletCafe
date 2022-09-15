@@ -1,0 +1,5 @@
+# NODE.js
+node_modules/
+
+# ENV
+.env
