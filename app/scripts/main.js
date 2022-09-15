@@ -21,13 +21,16 @@ function initializeMap(map)
 
 function addEventListeners(map)
 {
+	let wasWarningShown = false;
+	
 	document.querySelector("#center").addEventListener("click", () => {
 		map.resetView();
 	});
 
 	document.querySelector("#position").addEventListener("click", (event) => {
-			if(confirm("La géolocalisation a une meilleure précision sur les appareils équipés de GPS, à utiliser avec recul sinon."))
+			if(wasWarningShown || confirm("La géolocalisation a une meilleure précision sur les appareils équipés de GPS, à utiliser avec recul sinon."))
 			{
+				wasWarningShown = true;
 				let done = map.togglePositionMarker();
 				
 				if(done)
