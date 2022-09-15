@@ -1,0 +1,54 @@
+:root
+{
+	--leaflet-margin: 10px;
+	--leaflet-icon-size: 44px;
+}
+
+#map
+{
+	height: 100%;
+	width: 100%;
+}
+
+#center
+{
+	left: var(--leaflet-margin);
+	bottom: var(--leaflet-margin);
+
+	background-image: url(../assets/center.png);
+}
+
+#position
+{
+	left: calc((var(--leaflet-margin) * 2) + var(--leaflet-icon-size));
+	bottom: var(--leaflet-margin);
+
+	background-image: url(../assets/person_disabled.png);
+}
+
+#position.enabled
+{
+	background-image: url(../assets/person.png);
+}
+
+.leaflet-control-layers-toggle
+{
+	background-image: url(../assets/layers.png) !important;
+	background-size: 90% 90% !important;
+}
+
+.leaflet-like-button
+{
+    background: #FFF;
+	background-position: center;
+	background-size: 90% 90%;
+
+	border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 5px;
+
+	width: var(--leaflet-icon-size);
+	height: var(--leaflet-icon-size);
+
+	position: absolute;
+	z-index: 9999;
+}
