@@ -1,0 +1,18 @@
+{
+  "name": "TrioletCafeAPI",
+  "version": "1.0.0",
+  "description": "API for TrioletCafé app.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Louis Parent",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.0"
+  }
+}
