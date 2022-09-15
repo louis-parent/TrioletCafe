@@ -7,12 +7,16 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
 	    <link rel="stylesheet" href="styles/leaflet-routing-machine.css" />
 
+		<!-- Librairies -->
 		<script defer src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
 		<script defer src="scripts/leaflet-routing-machine.js"></script>
 		<script defer src="scripts/lrm-graphhopper-1.2.0.js"></script>
+		
+		<!-- Application -->
 		<script defer src="scripts/MapIcons.js"></script>
 		<script defer src="scripts/SlippyMap.js"></script>
-
+		<script defer src="scripts/main.js"></script>
+		
 		<style>
 			:root
 			{
@@ -83,71 +87,6 @@
 				z-index: 9999;
 			}
 		</style>
-		
-		<script defer>			
-			const locations = {
-				fds: {			
-					latitude: 43.63278,
-					longitude: 3.86451,
-					zoom: 18
-				},
-				coffee: [{
-					latitude: 43.63304914328182,
-					longitude: 3.862113786201999,
-					amount: 2
-				}, {
-					latitude: 43.63162069367068,
-					longitude: 3.863487225751479,
-					amount: 3
-				}, {
-					latitude: 43.631381114092,
-					longitude: 3.86231660842896,
-					amount: 3
-				}],
-				snack: [{
-					latitude: 43.63304914328182,
-					longitude: 3.862113786201999,
-					amount: 1
-				}, {
-					latitude: 43.63162069367068,
-					longitude: 3.863487225751479,
-					amount: 1
-				}, {
-					latitude: 43.631381114092,
-					longitude: 3.86231660842896,
-					amount: 3
-				}]
-			};
-			
-			window.addEventListener("load", () => {
-				const map = new SlippyMap(locations.fds, {
-					default: locations.fds.zoom,
-					max: 19
-				});
-				
-				for(let coffee of locations.coffee)
-				{
-					map.addCoffeeMarker(coffee);
-				}
-			
-				for(let snack of locations.snack)
-				{
-					map.addSnackMarker(snack);
-				}
-			
-				document.querySelector("#center").addEventListener("click", () => {
-					map.resetView();
-				});
-			
-				document.querySelector("#position").addEventListener("click", (event) => {
-					if(map.isGeolocationAvailable)
-					{
-						event.target.classList.toggle("enabled");
-						map.togglePositionMarker();
-					}
-				});
-			});
-		</script>
 	</head>
 	
 	<body>

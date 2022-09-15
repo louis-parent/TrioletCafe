@@ -90,14 +90,14 @@ class SlippyMap
 	addCoffeeMarker(data)
 	{
 		const marker = L.marker([data.latitude, data.longitude], { icon: coffeeIcon });
-		marker.bindPopup("Disponibilité : <i>" + data.amount + " machines</i>");
+		marker.bindPopup(data.description);
 		this.coffeeGroup.addLayer(marker);
 	}
 	
 	addSnackMarker(data)
 	{
 		const marker = L.marker([data.latitude, data.longitude], { icon: snackIcon }).addTo(this.leaflet);
-		marker.bindPopup("Disponibilité : <i>" + data.amount + " machines</i>");
+		marker.bindPopup(data.description);
 		this.snackGroup.addLayer(marker);
 	}
 	
