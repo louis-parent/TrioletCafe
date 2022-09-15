@@ -31,6 +31,19 @@
 	background-image: url(../assets/person.png);
 }
 
+#route
+{
+	left: calc((var(--leaflet-margin) * 3) + (var(--leaflet-icon-size) * 2));
+	bottom: var(--leaflet-margin);
+
+	background-image: url(../assets/map_disabled.png);
+}
+
+#route.enabled
+{
+	background-image: url(../assets/map.png);
+}
+
 .leaflet-control-layers-toggle
 {
 	background-image: url(../assets/layers.png) !important;
@@ -39,7 +52,7 @@
 
 .leaflet-like-button
 {
-    background: #FFF;
+    background-color: #FFF;
 	background-position: center;
 	background-size: 90% 90%;
 
@@ -51,4 +64,14 @@
 
 	position: absolute;
 	z-index: 9999;
+}
+
+.leaflet-like-button:active
+{
+	box-shadow: gray
+}
+
+.leaflet-like-button:active
+{
+	background-color: #EEE;
 }

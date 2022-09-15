@@ -18,8 +18,11 @@ class SlippyMap
 		};		
 		
 		this.isGeolocationAvailable = true;
-		this.isFollowingPosition = false;
+		
+		this.isShowingPosition = false;
+		
 		this.displayedRouting = null;
+		this.routingDestination = null;
 		
 		this.setupTile();
 		this.setupLayerGroups();
@@ -71,30 +74,39 @@ class SlippyMap
 	{
 		if(navigator.geolocation)
 		{
-			navigator.geolocation.getCurrentPosition((position) => {
-				this.updatePositionMarker(position.coords);
-			}, (error) => {
-				if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE || error.code === error.UNKNOWN_ERROR
-				)
-				{
-					this.isGeolocationAvailable = false;
-				}
-			});
-			
-			navigator.geolocation.watchPosition((position) => {
-				this.updatePositionMarker(position.coords);
-			}, (error) => {
-				if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE || error.code === error.UNKNOWN_ERROR
-				)
-				{
-					this.isGeolocationAvailable = false;
-				}
-			});
+			this.setupCurrentPosition();
+			this.setupPositionWatcher();
 		}
 		else
 		{
 			this.isGeolocationAvailable = false;
 		}
+	}
+	
+	setupCurrentPosition()
+	{
+		navigator.geolocation.getCurrentPosition((position) => {
+			this.updatePositionMarker(position.coords);
+		}, (error) => {
+			if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE || error.code === error.UNKNOWN_ERROR
+			)
+			{
+				this.isGeolocationAvailable = false;
+			}
+		});
+	}
+	
+	setupPositionWatcher()
+	{
+		navigator.geolocation.watchPosition((position) => {
+			this.updatePositionMarker(position.coords);
+		}, (error) => {
+			if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE || error.code === error.UNKNOWN_ERROR
+			)
+			{
+				this.isGeolocationAvailable = false;
+			}
+		});
 	}
 	
 	addCoffeeMarker(data)
@@ -119,16 +131,21 @@ class SlippyMap
 	{
 		if(this.isGeolocationAvailable)
 		{
-			if(this.isFollowingPosition)
+			if(this.isShowingPosition)
 			{
 				this.leaflet.removeLayer(this.positionGroup);
+				
+				if(this.isShowingRouting())
+				{
+					this.removeDisplayedRouting();
+				}
 			}
 			else
 			{
 				this.leaflet.addLayer(this.positionGroup);
 			}
 			
-			this.isFollowingPosition = !this.isFollowingPosition;
+			this.isShowingPosition = !this.isShowingPosition;
 			
 			return true;
 		}
@@ -136,13 +153,32 @@ class SlippyMap
 		{
 			return false;
 		}
+	}
+	
+	removeDisplayedRouting()
+	{
+		this.displayedRouting.remove();
+		
+		this.displayedRouting = null;
+		this.routingDestination = null;
 	}
 	
 	updatePositionMarker(position)
 	{
 		if(this.isGeolocationAvailable)
 		{
-			this.positionMarker.setLatLng([position.latitude, position.longitude]);
+			const waypoint = [position.latitude, position.longitude];
+			
+			this.positionMarker.setLatLng(waypoint);
+			
+			if(this.displayedRouting !== null)
+			{
+				this.displayedRouting.setWaypoints([
+					waypoint,
+					this.routingDestination
+				]);
+			}			
+			
 			return true;
 		}
 		else
@@ -151,19 +187,29 @@ class SlippyMap
 		}
 	}
 	
-	createPedestrianRouting(start, end)
+	togglePedestrianRoutingFromCurrentLocationTo(end)
+	{
+		if(this.isShowingRouting())
+		{
+			this.removeDisplayedRouting();
+			return true;
+		}
+		else
+		{
+			return this.createPedestrianRoutingFromCurrentLocationTo(end);
+		}
+	}
+	
+	createPedestrianRoutingFromCurrentLocationTo(end)
 	{
 		if(this.isGeolocationAvailable)
-		{
-			if(this.displayedRouting !== null)
-			{
-				this.displayedRouting.remove();
-			}
+		{			
+			this.routingDestination = L.latLng(end.latitude, end.longitude);
 			
 			this.displayedRouting = L.Routing.control({
 				waypoints: [
-					L.latLng(start.latitude, start.longitude),
-					L.latLng(end.latitude, end.longitude)
+					this.positionMarker.getLatLng(),
+					this.routingDestination
 				],
 				router: L.Routing.graphHopper("2416c596-20ba-4079-923b-471cdb741795", {
 					urlParameters: {
@@ -180,5 +226,20 @@ class SlippyMap
 		{
 			return false;
 		}
+	}
+	
+	isShowingPositionMarker()
+	{
+		return this.isShowingPosition;
+	}
+	
+	isShowingRouting()
+	{
+		return this.displayedRouting !== null;
+	}
+	
+	enableGeolocation(enabled)
+	{
+		this.isGeolocationAvailable = enabled;
 	}
 };
