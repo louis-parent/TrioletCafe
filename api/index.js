@@ -25,15 +25,22 @@ function openDatabase()
 function setupDatabase(database)
 {
 	return new Promise((success, error) => {
-		database.exec("DROP TABLE IF EXISTS CoffeeMachines;").then(() => {
-			database.exec("CREATE TABLE CoffeeMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL, description TEXT);").then(() => {
-				database.exec("INSERT INTO CoffeeMachines(latitude, longitude, description) VALUES(43.63304914328182, 3.862113786201999, 'Machine au premier étage');").then(() => {
-					database.exec("DROP TABLE IF EXISTS SnackMachines;").then(() => {
-						database.exec("CREATE TABLE SnackMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL, description TEXT);").then(() => {
-							database.exec("INSERT INTO SnackMachines(latitude, longitude, description) VALUES(43.63304914328182, 3.862113786201999, 'Machine au premier étage');").then(() => {
-								success(database);
+		database.exec("DROP TABLE IF EXISTS Locations;").then(() => {
+			database.exec("CREATE TABLE Locations(name TEXT PRIMARY KEY, latitude REAL, longitude REAL, zoom INTEGER);").then(() => {
+				database.exec("INSERT INTO Locations(name, latitude, longitude, zoom) VALUES('Triolet', 43.63278, 3.86451, 18);").then(() => {
+					database.exec("DROP TABLE IF EXISTS CoffeeMachines;").then(() => {
+						database.exec("CREATE TABLE CoffeeMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL, description TEXT);").then(() => {
+							database.exec("INSERT INTO CoffeeMachines(latitude, longitude, description) VALUES(43.63304914328182, 3.862113786201999, 'Machine au premier étage');").then(() => {
+								database.exec("DROP TABLE IF EXISTS SnackMachines;").then(() => {
+									database.exec("CREATE TABLE SnackMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL, description TEXT);").then(() => {
+										database.exec("INSERT INTO SnackMachines(latitude, longitude, description) VALUES(43.63304914328182, 3.862113786201999, 'Machine au premier étage');").then(() => {
+											success(database);
+										});
+									});
+								});
 							});
 						});
+						
 					});
 				});
 			});
