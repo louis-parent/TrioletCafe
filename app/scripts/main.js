@@ -26,11 +26,19 @@ function addEventListeners(map)
 	});
 
 	document.querySelector("#position").addEventListener("click", (event) => {
-		if(map.isGeolocationAvailable)
-		{
-			event.target.classList.toggle("enabled");
-			map.togglePositionMarker();
-		}
+			if(confirm("La géolocalisation a une meilleure précision sur les appareils équipés de GPS, à utiliser avec recul sinon."))
+			{
+				let done = map.togglePositionMarker();
+				
+				if(done)
+				{
+					event.target.classList.toggle("enabled");
+				}
+				else
+				{
+					alert("La géolocalisation est indisponible, essayez de recharger la page");
+				}
+			}
 	});
 }
 

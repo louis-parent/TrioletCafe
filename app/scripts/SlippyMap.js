@@ -71,6 +71,16 @@ class SlippyMap
 	{
 		if(navigator.geolocation)
 		{
+			navigator.geolocation.getCurrentPosition((position) => {
+				this.updatePositionMarker(position.coords);
+			}, (error) => {
+				if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE || error.code === error.UNKNOWN_ERROR
+				)
+				{
+					this.isGeolocationAvailable = false;
+				}
+			});
+			
 			navigator.geolocation.watchPosition((position) => {
 				this.updatePositionMarker(position.coords);
 			}, (error) => {
@@ -92,6 +102,8 @@ class SlippyMap
 		const marker = L.marker([data.latitude, data.longitude], { icon: coffeeIcon });
 		marker.bindPopup(data.description);
 		this.coffeeGroup.addLayer(marker);
+		
+		return true;
 	}
 	
 	addSnackMarker(data)
@@ -99,49 +111,74 @@ class SlippyMap
 		const marker = L.marker([data.latitude, data.longitude], { icon: snackIcon }).addTo(this.leaflet);
 		marker.bindPopup(data.description);
 		this.snackGroup.addLayer(marker);
+		
+		return true;
 	}
 	
 	togglePositionMarker()
 	{
-		if(this.isFollowingPosition)
+		if(this.isGeolocationAvailable)
 		{
-			this.leaflet.removeLayer(this.positionGroup);
+			if(this.isFollowingPosition)
+			{
+				this.leaflet.removeLayer(this.positionGroup);
+			}
+			else
+			{
+				this.leaflet.addLayer(this.positionGroup);
+			}
+			
+			this.isFollowingPosition = !this.isFollowingPosition;
+			
+			return true;
 		}
 		else
 		{
-			this.leaflet.addLayer(this.positionGroup);
+			return false;
 		}
-		
-		this.isFollowingPosition = !this.isFollowingPosition;
 	}
 	
 	updatePositionMarker(position)
 	{
-		if(this.isFollowingPosition)
+		if(this.isGeolocationAvailable)
 		{
 			this.positionMarker.setLatLng([position.latitude, position.longitude]);
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 	
 	createPedestrianRouting(start, end)
 	{
-		if(this.displayedRouting !== null)
+		if(this.isGeolocationAvailable)
 		{
-			this.displayedRouting.remove();
+			if(this.displayedRouting !== null)
+			{
+				this.displayedRouting.remove();
+			}
+			
+			this.displayedRouting = L.Routing.control({
+				waypoints: [
+					L.latLng(start.latitude, start.longitude),
+					L.latLng(end.latitude, end.longitude)
+				],
+				router: L.Routing.graphHopper("2416c596-20ba-4079-923b-471cdb741795", {
+					urlParameters: {
+						vehicle: "foot"
+					}
+				}),
+				routeWhileDragging: true,
+				createMarker: function() { return null; }
+			}).addTo(this.leaflet);
+			
+			return true;
 		}
-		
-		this.displayedRouting = L.Routing.control({
-			waypoints: [
-				L.latLng(start.latitude, start.longitude),
-				L.latLng(end.latitude, end.longitude)
-			],
-			router: L.Routing.graphHopper("2416c596-20ba-4079-923b-471cdb741795", {
-				urlParameters: {
-					vehicle: "foot"
-				}
-			}),
-			routeWhileDragging: true,
-			createMarker: function() { return null; }
-		}).addTo(this.leaflet);
+		else
+		{
+			return false;
+		}
 	}
 };
