@@ -1,5 +1,8 @@
 import * as dotenv from "dotenv";
+
 import express from "express";
+import cors from "cors";
+
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
@@ -54,6 +57,16 @@ function setupDatabase(database)
 function openServer(database)
 {
 	const app = express();
+	app.use(cors());
+	
+	app.get("/triolet", (request, response) => {
+		database.get("SELECT latitude, longitude, zoom FROM Locations WHERE name = 'Triolet';").then((location) => {
+			response.json(location);
+		}).catch(() => {
+			response.status(500);
+			response.send("Internal error while fetching triolet location");
+		});
+	});
 	
 	app.get("/coffee", (request, response) => {
 		database.all("SELECT latitude, longitude, description FROM CoffeeMachines;").then((coffees) => {		
@@ -109,5 +122,7 @@ function openServer(database)
 	app.listen(process.env.PORT);
 	console.log("API started on port", process.env.PORT);
 }
+
+
 
 boot().then(openDatabase).then(setupDatabase).then(openServer);
