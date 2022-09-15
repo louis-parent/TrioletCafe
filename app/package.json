@@ -1,0 +1,14 @@
+{
+  "name": "trioletcafe",
+  "version": "1.0.0",
+  "description": "Triolet Café web application.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "serve -l 8080"
+  },
+  "author": "Louis Parent",
+  "license": "ISC",
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}

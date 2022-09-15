@@ -1,5 +1,5 @@
 {
-  "name": "TrioletCafeAPI",
+  "name": "trioletcafeapi",
   "version": "1.0.0",
   "description": "API for TrioletCafé app.",
   "main": "index.js",
@@ -14,5 +14,8 @@
     "express": "^4.18.1",
     "sqlite": "^4.1.2",
     "sqlite3": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
   }
 }
