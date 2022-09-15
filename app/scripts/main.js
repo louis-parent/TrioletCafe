@@ -49,7 +49,7 @@ function addEventListeners(map)
 		}
 	});
 	
-	document.querySelector("#route").addEventListener("click", (event) => {
+	document.querySelector("#route").addEventListener("click", (event) => {	
 		const done = map.togglePedestrianRoutingFromCurrentLocationTo({
 			latitude: 43.63304914328182,
 			longitude: 3.862113786201999

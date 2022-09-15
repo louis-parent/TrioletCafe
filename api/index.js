@@ -119,6 +119,24 @@ function openServer(database)
 		});
 	});
 	
+	app.get("/nearby/coffee/:latitude/:longitude", (request, response) => {
+		const latitude = request.params.latitude;
+		const longitude = request.params.longitude;
+		
+		database.get("SELECT latitude, longitude FROM CoffeMachines WHERE id = 1;").then((position) => {		
+			if(id !== undefined)
+			{
+				response.json(position);			
+			}
+			else
+			{
+				response.status(404).send("Cannot find nearby coffee machine");
+			}
+		}).catch(() => {
+			response.status(500).send("Internal error while fetching snack machines");
+		});
+	});
+	
 	app.listen(process.env.PORT);
 	console.log("API started on port", process.env.PORT);
 }

@@ -203,7 +203,7 @@ class SlippyMap
 	createPedestrianRoutingFromCurrentLocationTo(end)
 	{
 		if(this.isGeolocationAvailable)
-		{			
+		{
 			this.routingDestination = L.latLng(end.latitude, end.longitude);
 			
 			this.displayedRouting = L.Routing.control({
