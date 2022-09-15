@@ -26,11 +26,11 @@ function setupDatabase(database)
 {
 	return new Promise((success, error) => {
 		database.exec("DROP TABLE IF EXISTS CoffeeMachines;").then(() => {
-			database.exec("CREATE TABLE CoffeeMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL);").then(() => {
-				database.exec("INSERT INTO CoffeeMachines(latitude, longitude) VALUES(43.63304914328182, 3.862113786201999);").then(() => {
+			database.exec("CREATE TABLE CoffeeMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL, description TEXT);").then(() => {
+				database.exec("INSERT INTO CoffeeMachines(latitude, longitude, description) VALUES(43.63304914328182, 3.862113786201999, 'Machine au premier étage');").then(() => {
 					database.exec("DROP TABLE IF EXISTS SnackMachines;").then(() => {
-						database.exec("CREATE TABLE SnackMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL);").then(() => {
-							database.exec("INSERT INTO SnackMachines(latitude, longitude) VALUES(43.63304914328182, 3.862113786201999);").then(() => {
+						database.exec("CREATE TABLE SnackMachines(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude REAL, longitude REAL, description TEXT);").then(() => {
+							database.exec("INSERT INTO SnackMachines(latitude, longitude, description) VALUES(43.63304914328182, 3.862113786201999, 'Machine au premier étage');").then(() => {
 								success(database);
 							});
 						});
@@ -49,7 +49,7 @@ function openServer(database)
 	const app = express();
 	
 	app.get("/coffee", (request, response) => {
-		database.all("SELECT latitude, longitude FROM CoffeeMachines;").then((coffees) => {		
+		database.all("SELECT latitude, longitude, description FROM CoffeeMachines;").then((coffees) => {		
 			response.json(coffees);
 		}).catch(() => {
 			response.status(500);
@@ -60,7 +60,7 @@ function openServer(database)
 	app.get("/coffee/:id", (request, response) => {
 		const id = request.params.id;
 		
-		database.get("SELECT latitude, longitude FROM CoffeeMachines WHERE id = ?;", id).then((coffee) => {		
+		database.get("SELECT latitude, longitude, description FROM CoffeeMachines WHERE id = ?;", id).then((coffee) => {		
 			if(coffee !== undefined)
 			{
 				response.json(coffee);
@@ -75,7 +75,7 @@ function openServer(database)
 	});
 	
 	app.get("/snack", (request, response) => {
-		database.all("SELECT latitude, longitude FROM SnackMachines;").then((snacks) => {		
+		database.all("SELECT latitude, longitude, description FROM SnackMachines;").then((snacks) => {		
 			response.json(snacks);
 		}).catch(() => {
 			response.status(500).send("Internal error while fetching snack machines");
@@ -85,7 +85,7 @@ function openServer(database)
 	app.get("/snack/:id", (request, response) => {
 		const id = request.params.id;
 		
-		database.get("SELECT latitude, longitude FROM SnackMachines WHERE id = ?;", id).then((snack) => {		
+		database.get("SELECT latitude, longitude, description FROM SnackMachines WHERE id = ?;", id).then((snack) => {		
 			if(id !== undefined)
 			{
 				response.json(snack);			
