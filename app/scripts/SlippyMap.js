@@ -242,4 +242,21 @@ class SlippyMap
 	{
 		this.isGeolocationAvailable = enabled;
 	}
+	
+	getCurrentPosition()
+	{
+		if(this.isGeolocationAvailable)
+		{
+			const latLng = this.positionMarker.getLatLng();
+
+			return {
+				latitude: latLng.lat,
+				longitude: latLng.lng
+			};
+		}
+		else
+		{
+			return null;	
+		}
+	}
 };

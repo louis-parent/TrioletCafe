@@ -123,8 +123,8 @@ function openServer(database)
 		const latitude = request.params.latitude;
 		const longitude = request.params.longitude;
 		
-		database.get("SELECT latitude, longitude FROM CoffeMachines WHERE id = 1;").then((position) => {		
-			if(id !== undefined)
+		database.get("SELECT latitude, longitude FROM CoffeeMachines WHERE id = 1;").then((position) => {		
+			if(position !== undefined)
 			{
 				response.json(position);			
 			}
@@ -132,8 +132,9 @@ function openServer(database)
 			{
 				response.status(404).send("Cannot find nearby coffee machine");
 			}
-		}).catch(() => {
-			response.status(500).send("Internal error while fetching snack machines");
+		}).catch((error) => {
+			console.error(error);
+			response.status(500).send("Internal error while findinf nearby coffee machines");
 		});
 	});
 	

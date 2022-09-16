@@ -49,20 +49,33 @@ function addEventListeners(map)
 		}
 	});
 	
-	document.querySelector("#route").addEventListener("click", (event) => {	
-		const done = map.togglePedestrianRoutingFromCurrentLocationTo({
-			latitude: 43.63304914328182,
-			longitude: 3.862113786201999
-		});
+	document.querySelector("#route").addEventListener("click", (event) => {
+		const position = map.getCurrentPosition();
 		
-		if(done)
+		if(position !== null)
 		{
-			event.target.classList.toggle("enabled");
-			
-			if(!map.isShowingPositionMarker())
-			{
-				document.querySelector("#position").click();
-			}
+			fetch("http://localhost:3000/nearby/coffee/" + position.latitude + "/" + position.longitude).then(data => {
+				return data.json();
+			}).then(destination => {
+				const done = map.togglePedestrianRoutingFromCurrentLocationTo({
+					latitude: destination.latitude,
+					longitude: destination.longitude
+				});
+				
+				if(done)
+				{
+					event.target.classList.toggle("enabled");
+					
+					if(!map.isShowingPositionMarker())
+					{
+						document.querySelector("#position").click();
+					}
+				}
+				else
+				{
+					alert("La géolocalisation est indisponible, essayez de recharger la page");
+				}
+			});
 		}
 		else
 		{
