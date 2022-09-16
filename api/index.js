@@ -120,20 +120,37 @@ function openServer(database)
 	});
 	
 	app.get("/nearby/coffee/:latitude/:longitude", (request, response) => {
-		const latitude = request.params.latitude;
-		const longitude = request.params.longitude;
+		const origin = {
+			latitude: request.params.latitude,
+			longitude: request.params.longitude
+		};
 		
-		database.get("SELECT latitude, longitude FROM CoffeeMachines WHERE id = 1;").then((position) => {		
-			if(position !== undefined)
+		database.all("SELECT latitude, longitude FROM CoffeeMachines;").then((destinations) => {		
+			if(destinations.length > 0)
 			{
-				response.json(position);			
+				let min = null;
+				
+				for(const destination of destinations)
+				{
+					const currentDistance = distanceBetweenGPSLocation(origin, destination);
+					
+					if(min === null || min.distance > currentDistance)
+					{
+						min = destination;
+						min.distance = currentDistance;
+					}
+				}
+				
+				response.json({
+					latitude: min.latitude,
+					longitude: min.longitude
+				});
 			}
 			else
 			{
 				response.status(404).send("Cannot find nearby coffee machine");
 			}
 		}).catch((error) => {
-			console.error(error);
 			response.status(500).send("Internal error while findinf nearby coffee machines");
 		});
 	});
@@ -142,6 +159,17 @@ function openServer(database)
 	console.log("API started on port", process.env.PORT);
 }
 
+
+function distanceBetweenGPSLocation(location1, location2)
+{
+	const averageEarthRadius = 6371;
+	return Math.acos(Math.sin(degreesToRadians(location1.latitude)) * Math.sin(degreesToRadians(location2.latitude)) + Math.cos(degreesToRadians(location1.latitude)) * Math.cos(degreesToRadians(location2.latitude)) * Math.cos(degreesToRadians(location1.longitude - location2.longitude))) * averageEarthRadius;
+}
+
+function degreesToRadians(degrees)
+{
+	return degrees * (Math.PI / 180);
+}	
 
 
 boot().then(openDatabase).then(setupDatabase).then(openServer);
