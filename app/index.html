@@ -34,9 +34,14 @@
 	</head>
 	
 	<body>
-		<a id="center" class="leaflet-like-button" href="#"></a>
-		<a id="position" class="leaflet-like-button" href="#"></a>
-		<a id="route" class="leaflet-like-button" href="#"></a>
+		<div id="info" class="leaflet-like-control hide">
+			<span>⏱ Temps : <span id="time"></span> min</span><br/>
+			<span>🚩 Distance : <span id="distance"></span> m</span>
+		</div>
+		
+		<a id="center" class="leaflet-like-control" href="#"></a>
+		<a id="position" class="leaflet-like-control" href="#"></a>
+		<a id="route" class="leaflet-like-control" href="#"></a>
 		
 		<main id="map">
 		</main>

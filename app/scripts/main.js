@@ -82,6 +82,18 @@ function addEventListeners(map)
 			alert("La géolocalisation est indisponible, essayez de recharger la page");
 		}
 	});
+	
+	map.on("routeup", info => {
+		document.querySelector("#info").classList.remove("hide");
+		document.querySelector("#time").innerText = Math.round(info.totalTime % 3600 / 60);
+		document.querySelector("#distance").innerText = Math.floor(info.totalDistance);
+	});
+	
+	map.on("routedown", info => {
+		document.querySelector("#info").classList.add("hide");
+		document.querySelector("#time").innerText = 0;
+		document.querySelector("#distance").innerText = 0;
+	});
 }
 
 window.addEventListener("load", () => {
@@ -93,7 +105,7 @@ window.addEventListener("load", () => {
 			max: 19
 		});
 		
-		showWarning(map);
+		// showWarning(map);
 		initializeMap(map);
 		addEventListeners(map);		
 	});

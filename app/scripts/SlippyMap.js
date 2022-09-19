@@ -7,6 +7,8 @@ class SlippyMap
 	
 	constructor(center, zoom, id)
 	{
+		this.listeners = new Object();
+		
 		this.center = {
 			latitude: center.latitude,
 			longitude: center.longitude
@@ -192,6 +194,7 @@ class SlippyMap
 		if(this.isShowingRouting())
 		{
 			this.removeDisplayedRouting();
+			this.emit("routedown", null);
 			return true;
 		}
 		else
@@ -219,6 +222,10 @@ class SlippyMap
 				routeWhileDragging: true,
 				createMarker: function() { return null; }
 			}).addTo(this.leaflet);
+			
+			this.displayedRouting.on("routesfound", (event) => {
+				this.emit("routeup", event.routes[0].summary);
+			});
 			
 			return true;
 		}
@@ -257,6 +264,27 @@ class SlippyMap
 		else
 		{
 			return null;	
+		}
+	}
+	
+	on(event, listener)
+	{	
+		if(this.listeners[event] === undefined)
+		{
+			this.listeners[event] = new Array();
+		}
+		
+		this.listeners[event].push(listener);
+	}
+	
+	emit(event, data)
+	{
+		if(this.listeners[event] !== undefined)
+		{
+			for(const listener of this.listeners[event])
+			{
+				listener(data);
+			}
 		}
 	}
 };
