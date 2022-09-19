@@ -107,3 +107,8 @@ a.leaflet-like-control:active
 {
 	background-color: #EEE;
 }
+
+.smaller
+{
+  font-size: 0.9em;
+}
