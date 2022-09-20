@@ -1,9 +1,9 @@
 cd api/
-npm run dev &> ../api.log &
+npm run $1 &> ../api.log &
 apiPID="$!"
 
 cd ../app/
-npm run dev &> ../app.log &
+npm run $1 &> ../app.log &
 appPID="$!"
 
 cd ..

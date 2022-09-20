@@ -4,7 +4,8 @@
   "description": "Triolet Café web application.",
   "main": "index.js",
   "scripts": {
-    "dev": "serve -l 8080"
+    "dev": "serve -l 8080",
+    "prod": "serve -l 80"
   },
   "author": "Louis Parent",
   "license": "ISC",
