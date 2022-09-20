@@ -1,3 +1,11 @@
+function getAPIBaseURL()
+{
+	const API_PORT = 3000;
+	const url = new URL(document.URL);
+	
+	return url.protocol + "//" + url.hostname + ":" + API_PORT;
+}
+
 function showWarning(map)
 {
 	let confirmed = confirm("La géolocalisation a une meilleure précision sur les appareils équipés de GPS, à utiliser avec recul sinon.");
@@ -6,7 +14,7 @@ function showWarning(map)
 
 function initializeMap(map)
 {
-	fetch("http://localhost:3000/coffee").then(data => {
+	fetch(getAPIBaseURL() + "/coffee").then(data => {
 		return data.json();
 	}).then(coffees => {
 		for(const coffee of coffees)
@@ -15,7 +23,7 @@ function initializeMap(map)
 		}	
 	});
 
-	fetch("http://localhost:3000/snack").then(data => {
+	fetch(getAPIBaseURL() + "/snack").then(data => {
 		return data.json();
 	}).then(snacks => {
 		for(const snack of snacks)
@@ -54,7 +62,7 @@ function addEventListeners(map)
 		
 		if(position !== null)
 		{
-			fetch("http://localhost:3000/nearby/coffee/" + position.latitude + "/" + position.longitude).then(data => {
+			fetch(getAPIBaseURL() + "/nearby/coffee/" + position.latitude + "/" + position.longitude).then(data => {
 				return data.json();
 			}).then(destination => {
 				const done = map.togglePedestrianRoutingFromCurrentLocationTo({
@@ -97,7 +105,7 @@ function addEventListeners(map)
 }
 
 window.addEventListener("load", () => {
-	fetch("http://localhost:3000/triolet").then(data => {
+	fetch(getAPIBaseURL() + "/triolet").then(data => {
 		return data.json();
 	}).then(location => {
 		const map = new SlippyMap(location, {
