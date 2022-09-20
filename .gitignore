@@ -1,0 +1,6 @@
+# Logs
+api.log
+app.log
+
+# PID
+.pid
