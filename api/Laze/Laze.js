@@ -3,16 +3,80 @@ import cors from "cors";
 
 class Entity
 {
-	constructor(name, access)
+	constructor(name, id, properties, access)
 	{
-		this.name = name;
+		this.name = name || crypto.randomUUID();
+		this.properties = {
+			id: undefined,
+			other: new Array()
+		};
 		
-		this.create = access.create || null;
-		this.read = access.read || null;
-		this.readAll = access.readAll || null;
-		this.update = access.update || null;
-		this.reset = access.reset || null;
-		this.delete = access.delete || null;
+		this.setId(id);
+		this.setProperties(properties);
+		this.setAccess(access);
+	}
+	
+	getName()
+	{
+		return this.name;
+	}
+	
+	setId(id)
+	{
+		if(id !== undefined)
+		{
+			this.properties.id = this.propertify(id);
+		}
+	}
+	
+	setProperties(properties)
+	{
+		if(Array.isArray(properties))
+		{
+			this.properties.other = new Array();
+			
+			for(const property of properties)
+			{
+				this.addProperty(property);
+			}
+		}
+	}
+	
+	addProperty(property)
+	{
+		this.properties.other.push(this.propertify(property));
+	}
+	
+	getProperties()
+	{
+		return this.properties;
+	}
+	
+	propertify(property)
+	{
+		if(typeof property === "object")
+		{
+			return {
+				name: property.name,
+				type: property.type
+			};
+		}
+		else
+		{
+			return {
+				name: property.toString(),
+				type: undefined
+			};
+		}
+	}
+	
+	setAccess(access) {
+		this.setCreate(access.create || null);
+		this.setRead(access.read || null);
+		this.setReadAll(access.readAll || null);
+		this.setUpdate(access.update || null);
+		this.setReset(access.reset || null);
+		this.setDelete(access.delete || null);
 	}
 	
 	setCreate(create)
@@ -81,6 +145,7 @@ class Laze
 	constructor()
 	{
 		this.entities = new Array();
+		this.router = null;
 	}
 	
 	addEntity(entity)
@@ -92,6 +157,7 @@ class Laze
 	{
 		this.router = express();
 		this.router.use(cors());
+		this.router.use(express.json());
 		
 		this.build();
 		
@@ -102,13 +168,78 @@ class Laze
 	{
 		for(const entity of this.entities)
 		{
-			this.buildRouteForEntity(entity);
+			this.buildRoutesForEntity(entity);
 		}
 	}
 	
-	buildRouteForEntity(entity)
+	buildRoutesForEntity(entity)
 	{
+		if(entity.canCreate)
+		{
+			this.buildCreateRoute(entity);
+		}
 		
+		if(entity.canRead)
+		{
+			this.buildReadRoute(entity);
+		}
+		
+		if(entity.canReadAll)
+		{
+			this.buildReadAllRoute(entity);
+		}
+		
+		if(entity.canUpdate)
+		{
+			this.buildUpdateRoute(entity);
+		}
+		
+		if(entity.canReset)
+		{
+			this.buildResetRoute(entity);
+		}
+		
+		if(entity.canDelete)
+		{
+			this.buildDeleteRoute(entity);
+		}
+	}
+	
+	buildCreateRoute(entity)
+	{
+		this.router.post("/" + entity.getName(), (request, response) => {
+			const
+		});
+	}
+	
+	buildReadRoute(entity)
+	{
+	
+	}
+	
+	buildReadAllRoute(entity)
+	{
+	
+	}
+	
+	buildUpdateRoute(entity)
+	{
+	
+	}
+	
+	buildResetRoute(entity)
+	{
+	
+	}
+	
+	buildDeleteRoute(entity)
+	{
+	
+	}
+	
+	matchSpecification(data, entity)
+	{
+		this.entity
 	}
 }
 
