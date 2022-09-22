@@ -6,6 +6,12 @@ import cors from "cors";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
+function requestLogger(request, response, next)
+{
+	console.log("Received :", request.originalUrl);
+	next();
+}
+
 function boot()
 {
 	return new Promise((success, error) => {
@@ -58,6 +64,7 @@ function openServer(database)
 {
 	const app = express();
 	app.use(cors());
+	app.use(requestLogger);
 	
 	app.get("/triolet", (request, response) => {
 		database.get("SELECT latitude, longitude, zoom FROM Locations WHERE name = 'Triolet';").then((location) => {
