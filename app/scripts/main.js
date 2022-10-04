@@ -1,9 +1,6 @@
 function getAPIBaseURL()
 {
-	const API_PORT = 3000;
-	const url = new URL(document.URL);
-	
-	return url.protocol + "//" + url.hostname + ":" + API_PORT;
+	return "/api";
 }
 
 function showWarning(map)
